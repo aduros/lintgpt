@@ -2,16 +2,22 @@ import kleur from 'kleur'
 
 import type { LintResult } from './lint'
 
+export interface PrintResultOptions {
+  result: LintResult
+  fixed: boolean
+}
+
 export interface PrintSummaryOptions {
   problemCounts: Record<string, number>
   cost?: string | undefined
 }
 
-export function printResult (result: LintResult): void {
-  // console.log(result.fileName, result.problems)
+export function printResult ({ fixed, result }: PrintResultOptions): void {
+  console.log(result.fileName, result.problems)
 
   for (const problem of result.problems) {
-    console.log(`${kleur.red('✘')} ${kleur.bold(problem.description)}`)
+    process.stdout.write(fixed && problem.replacedCharacters ? kleur.yellow('✔') : kleur.red('✘'))
+    console.log(` ${kleur.bold(problem.description)}`)
     console.log()
 
     const line = result.fileLines[problem.lineNumber - 1]
@@ -25,9 +31,13 @@ export function printResult (result: LintResult): void {
       console.log(`      ${kleur.yellow(problem.lineNumber)} ${kleur.black('│')} ${line}`)
       if (startIdx >= 0) {
         console.log(`      ${' '.repeat(problem.lineNumber.toString().length)} ${kleur.black('│')} ${' '.repeat(startIdx)}${kleur.red('~'.repeat(problem.problemCharacters.length))}`)
+
+        if (fixed && problem.replacedCharacters) {
+          console.log(`    ${kleur.bold('Fixed:')}`)
+          console.log(`      ${' '.repeat(problem.lineNumber.toString().length)} ${kleur.black('│')} ${line.substring(0, startIdx)}${kleur.green(problem.replacedCharacters)}${line.substring(startIdx + problem.replacedCharacters.length)}`)
+        }
       }
     }
-    console.log()
   }
 }
 

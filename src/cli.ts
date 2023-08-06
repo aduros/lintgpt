@@ -11,17 +11,30 @@ import fastq from 'fastq'
 import ora from 'ora'
 import kleur from 'kleur'
 import { calculateCost } from './cost'
+import { fixProblems } from './fix'
 
 program
   .name('lintgpt')
   .option('--model <model>', 'OpenAI model to use', 'gpt-4')
   .option('--concurrency <concurrency>', 'Number of files to process in parallel', parseFloat, 8)
   .option('--show-cost', 'If OpenAIh requests were made, show the total cost spent', false)
-  // .option('--fix', 'Automatically fix problems')
+  .option('--fix', 'Automatically fix problems')
   .argument('[file-patterns...]', 'Files to check for problems')
   .action(async (filePatterns: string[], opts) => {
     if (filePatterns.length === 0) {
       program.help()
+    }
+
+    const {
+      concurrency,
+      fix,
+      model,
+      showCost,
+    } = opts as {
+      concurrency: number
+      fix: boolean
+      model: string
+      showCost: boolean
     }
 
     const spinner = ora().start()
@@ -62,18 +75,29 @@ program
     const queue = fastq.promise(async (fileName: string) => {
       const result = await lint(fileName, {
         openai,
-        model: opts.model,
+        model,
       })
 
       // await new Promise(resolve => {
       //   setTimeout(resolve, 2000)
       // })
 
+      let unfixedProblemCount = result.problems.length
+      if (fix) {
+        unfixedProblemCount -= await fixProblems(result)
+      }
+
       if (result.problems.length) {
         clearSpinner()
-        printResult(result)
+        printResult({
+          result,
+          fixed: fix,
+        })
+        console.log()
+      }
 
-        summary.problemCounts[fileName] = result.problems.length
+      if (unfixedProblemCount > 0) {
+        summary.problemCounts[fileName] = unfixedProblemCount
       }
 
       spentInputTokens += result.spentInputTokens
@@ -81,7 +105,7 @@ program
 
       ++progress
       updateSpinner()
-    }, opts.concurrency)
+    }, concurrency)
 
     // Handle errors with the global error handler
     queue.error(error => {
@@ -103,11 +127,11 @@ program
     await queue.drained()
     spinner.stop()
 
-    if (opts.showCost) {
+    if (showCost) {
       summary.cost = calculateCost({
         spentInputTokens,
         spentOutputTokens,
-        model: opts.model,
+        model,
       })
     }
 
