@@ -2,6 +2,8 @@
 
 LintGPT scans your code for bugs using AI.
 
+> Status: Alpha ⚡
+
 ## Features
 
 - Discover bugs in source code that can be difficult to detect with other tools.
@@ -97,3 +99,11 @@ $ npx lintgpt user.ts
     Fixed:
          │     return this.age > 21
 ```
+
+## Caveats
+
+GPT isn't perfect, and frequently reports things that are not errors, or suggests incorrect fixes. Take care when using the `--fix` option to review any changes.
+
+A good way to think about LintGPT is as a team of highschool interns who just completed their first computer science course. Have them review your code and they might find a few things, but take their output with a grain of salt.
+
+Please also be aware that LintGPT sends the files you pass it to OpenAI. Don't use it in files containing sensitive information.
