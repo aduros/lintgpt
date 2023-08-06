@@ -1,0 +1,5 @@
+{
+  "transform": {
+    "\\.ts$": "esbuild-runner/jest"
+  }
+}

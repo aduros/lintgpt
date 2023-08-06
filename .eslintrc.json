@@ -1,0 +1,17 @@
+{
+  "overrides": [
+    {
+      "extends": "standard-with-typescript",
+      "files": [
+        "*.ts", "*.tsx", "*.js", "*.jsx"
+      ],
+      "parserOptions": {
+        "project": "./tsconfig.json"
+      },
+      "rules": {
+        "@typescript-eslint/comma-dangle": [2, "always-multiline"],
+        "@typescript-eslint/strict-boolean-expressions": 0
+      }
+    }
+  ]
+}
