@@ -8,7 +8,7 @@ export async function fixProblems (result: LintResult): Promise<number> {
 
   for (const problem of result.problems) {
     if (problem.replacedCharacters) {
-      const originalCode = result.fileLines[problem.lineNumber - 1]
+      const originalCode = fixedLines[problem.lineNumber - 1]
       if (originalCode) {
         fixedLines[problem.lineNumber - 1] = originalCode.replace(problem.problemCharacters, problem.replacedCharacters)
         ++fixCount

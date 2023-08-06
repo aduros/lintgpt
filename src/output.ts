@@ -13,7 +13,7 @@ export interface PrintSummaryOptions {
 }
 
 export function printResult ({ fixed, result }: PrintResultOptions): void {
-  console.log(result.fileName, result.problems)
+  // console.log(result.fileName, result.problems)
 
   for (const problem of result.problems) {
     process.stdout.write(fixed && problem.replacedCharacters ? kleur.yellow('✔') : kleur.red('✘'))
@@ -34,10 +34,12 @@ export function printResult ({ fixed, result }: PrintResultOptions): void {
 
         if (fixed && problem.replacedCharacters) {
           console.log(`    ${kleur.bold('Fixed:')}`)
-          console.log(`      ${' '.repeat(problem.lineNumber.toString().length)} ${kleur.black('│')} ${line.substring(0, startIdx)}${kleur.green(problem.replacedCharacters)}${line.substring(startIdx + problem.replacedCharacters.length)}`)
+          console.log(`      ${' '.repeat(problem.lineNumber.toString().length)} ${kleur.black('│')} ${line.substring(0, startIdx)}${kleur.green(problem.replacedCharacters)}${line.substring(startIdx + problem.problemCharacters.length)}`)
         }
       }
     }
+
+    console.log()
   }
 }
 

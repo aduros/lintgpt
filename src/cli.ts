@@ -17,7 +17,7 @@ program
   .name('lintgpt')
   .option('--model <model>', 'OpenAI model to use', 'gpt-4')
   .option('--concurrency <concurrency>', 'Number of files to process in parallel', parseFloat, 8)
-  .option('--show-cost', 'If OpenAIh requests were made, show the total cost spent', false)
+  .option('--show-cost', 'If OpenAI requests were made, show the total cost spent', false)
   .option('--fix', 'Automatically fix problems')
   .argument('[file-patterns...]', 'Files to check for problems')
   .action(async (filePatterns: string[], opts) => {
@@ -93,7 +93,6 @@ program
           result,
           fixed: fix,
         })
-        console.log()
       }
 
       if (unfixedProblemCount > 0) {
