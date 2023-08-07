@@ -47,7 +47,7 @@ export class User {
 Using `lintgpt` can understand intent and catch logic errors that are difficult to detect with other tools:
 
 ```
-$ npx lintgpt user.ts
+$ npx lintgpt user.ts --fix
 
 ✘ getLastName method returns firstName instead of lastName
 
