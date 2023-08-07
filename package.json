@@ -1,14 +1,18 @@
 {
   "name": "lintgpt",
   "version": "0.0.1",
-  "main": "dist/index.mjs",
+  "main": "./dist/index.mjs",
+  "types": "./dist/index.d.mts",
   "bin": {
     "lintgpt": "./dist/cli.mjs"
   },
+  "files": [
+    "./dist"
+  ],
   "scripts": {
     "prepare": "husky install",
     "prepublishOnly": "npm run build -- --clean",
-    "build": "tsup src/index.ts src/cli.ts --format esm --sourcemap",
+    "build": "tsup src/index.ts src/cli.ts --format esm --sourcemap --dts",
     "test": "jest",
     "test:types": "tsc --noEmit",
     "test:lint": "eslint ."
