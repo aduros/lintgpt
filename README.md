@@ -19,7 +19,7 @@ here](https://beta.openai.com/account/api-keys).
 
 ## Example
 
-Below is a simple User class in TypeScript. It passes type-checking, and there are no eslint style errors. However, this program still contains a few bugs:
+Below is an example User class in TypeScript. It passes type-checking, and there are no eslint style errors. However, this program still contains a few bugs:
 
 ```typescript
 export class User {
@@ -44,30 +44,30 @@ export class User {
 }
 ```
 
-Using `lintgpt` can catch logic errors that are difficult to detect with other tools:
+Using `lintgpt` can understand intent and catch logic errors that are difficult to detect with other tools:
 
 ```
 $ npx lintgpt user.ts
 
 ✘ getLastName method returns firstName instead of lastName
 
-    problem.ts:10:12
+    user.ts:10:12
       10 │     return this.firstName
          │            ~~~~~~~~~~~~~~
 
 ✘ getFullName method does not include a space between firstName and lastName
 
-    problem.ts:14:12
+    user.ts:14:12
       14 │     return this.firstName + this.lastName
          │            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 ✘ isLegalDrinkingAge method checks if age is greater than 10, not the legal drinking age in most countries
 
-    problem.ts:18:23
+    user.ts:18:23
       18 │     return this.age > 10
          │                       ~~
 
-Found 3 problems in problem.ts.
+Found 3 problems in user.ts.
 ```
 
 You can even pass `--fix` to automatically apply suggested changes to your files.
@@ -77,7 +77,7 @@ $ npx lintgpt user.ts
 
 ✔ getLastName method returns firstName instead of lastName
 
-    problem.ts:10:12
+    user.ts:10:12
       10 │     return this.firstName
          │            ~~~~~~~~~~~~~~
     Fixed:
@@ -85,7 +85,7 @@ $ npx lintgpt user.ts
 
 ✔ getFullName method does not include a space between firstName and lastName
 
-    problem.ts:14:12
+    user.ts:14:12
       14 │     return this.firstName + this.lastName
          │            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     Fixed:
@@ -93,7 +93,7 @@ $ npx lintgpt user.ts
 
 ✔ isLegalDrinkingAge method checks if age is greater than 10, not the legal drinking age in most countries
 
-    problem.ts:18:23
+    user.ts:18:23
       18 │     return this.age > 10
          │                       ~~
     Fixed:
