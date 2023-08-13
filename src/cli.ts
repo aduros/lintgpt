@@ -3,7 +3,7 @@
 import { Configuration, OpenAIApi } from 'openai'
 
 import { lint } from './lint'
-import { printResult, type PrintSummaryOptions, printSummary } from './output'
+import { printResult, type PrintSummaryOptions, printSummary, type OutputFormat } from './output'
 
 import { program } from 'commander'
 import { type Options as GlobbyOptions, globbyStream } from 'globby'
@@ -19,6 +19,7 @@ program
   .option('--concurrency <concurrency>', 'Number of files to process in parallel', parseFloat, 8)
   .option('--show-cost', 'If OpenAI requests were made, show the total cost spent', false)
   .option('--fix', 'Automatically fix problems')
+  .addOption(program.createOption('--format <format>', 'Output format').choices(['auto', 'pretty', 'raw']).default('auto'))
   .argument('[file-patterns...]', 'Files to check for problems')
   .action(async (filePatterns: string[], opts) => {
     if (filePatterns.length === 0) {
@@ -36,6 +37,11 @@ program
       model: string
       showCost: boolean
     }
+
+    // If piping, use raw output by default
+    const format: OutputFormat = opts.format === 'auto'
+      ? (process.stdout.isTTY ? 'pretty' : 'raw')
+      : opts.format
 
     const spinner = ora().start()
     let progressTotal = 0
@@ -92,6 +98,7 @@ program
         printResult({
           result,
           fixed: fix,
+          format,
         })
       }
 
@@ -134,7 +141,9 @@ program
       })
     }
 
-    printSummary(summary)
+    if (format === 'pretty') {
+      printSummary(summary)
+    }
     process.exit(Object.keys(summary.problemCounts).length > 0 ? 1 : 0)
   })
 
